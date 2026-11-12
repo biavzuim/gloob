@@ -48,13 +48,24 @@ function tela(ic, msg, nome, tentar) {
   $("ic").textContent = ic; $("msg").textContent = msg;
   $("nm").className = nome ? "" : "h"; $("tentar").className = tentar ? "" : "h";
 }
+function mostra(html) { document.open(); document.write(html); document.close(); }
 async function abrir() {
   if (!localStorage.getItem("devNome")) return tela("🔒", "Este aparelho ainda não tem acesso. Dê um nome para ele e peça acesso.", true);
+  const salvo = localStorage.getItem("appHtml");
+  if (salvo) {
+    mostra(salvo);
+    fetch(API, {method: "POST", body: JSON.stringify({fn: "__html", dev: tok(), nome: localStorage.getItem("devNome") || ""})})
+      .then(r => r.json()).then(j => {
+        if (j.ok) { if (j.r !== salvo) localStorage.setItem("appHtml", j.r); }
+        else if (j.e === "PEND" || j.e === "DEV") { localStorage.removeItem("appHtml"); localStorage.removeItem("cDados"); location.reload(); }
+      }).catch(() => {});
+    return;
+  }
   tela("⏳", "Carregando…");
   try {
     const r = await fetch(API, {method: "POST", body: JSON.stringify({fn: "__html", dev: tok(), nome: localStorage.getItem("devNome") || ""})});
     const j = await r.json();
-    if (j.ok) { document.open(); document.write(j.r); document.close(); return; }
+    if (j.ok) { try { localStorage.setItem("appHtml", j.r); } catch (e) {} mostra(j.r); return; }
     if (j.e === "PEND") {
       if (!localStorage.getItem("devNome")) return tela("🔒", "Este aparelho ainda não tem acesso. Dê um nome para ele e peça acesso.", true);
       return tela("🔒", "Pedido enviado. Agora a Bea precisa aprovar este aparelho (" + localStorage.getItem("devNome") + ") no app, em Acessos, ou na aba Acessos da planilha.", false, true);
