@@ -48,7 +48,10 @@ function tela(ic, msg, nome, tentar) {
   $("ic").textContent = ic; $("msg").textContent = msg;
   $("nm").className = nome ? "" : "h"; $("tentar").className = tentar ? "" : "h";
 }
-function mostra(html) { document.open(); document.write(html); document.close(); }
+function mostra(html) {
+  const vai = () => { document.open(); document.write(html); document.close(); };
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", () => setTimeout(vai, 0)); else setTimeout(vai, 0);
+}
 async function abrir() {
   if (!localStorage.getItem("devNome")) return tela("🔒", "Este aparelho ainda não tem acesso. Dê um nome para ele e peça acesso.", true);
   const salvo = localStorage.getItem("appHtml");
