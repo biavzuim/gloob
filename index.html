@@ -8,20 +8,21 @@
 <meta name="apple-mobile-web-app-title" content="Gloob">
 <meta name="theme-color" content="#1f6f54">
 <meta name="robots" content="noindex, nofollow">
+<meta http-equiv="Cache-Control" content="no-cache">
 <title>Gloob</title>
 <style>
-  body{margin:0;font-family:system-ui,-apple-system,sans-serif;background:#f4f6f5;color:#1d2a25;display:flex;min-height:100vh;align-items:center;justify-content:center;padding:20px;box-sizing:border-box}
-  .c{max-width:340px;width:100%;text-align:center}
-  .i{font-size:46px}
-  input,button{width:100%;box-sizing:border-box;font-size:17px;border-radius:12px;padding:13px;margin-top:12px}
-  input{border:1px solid #c9d3cf}
-  button{border:0;background:#1f6f54;color:#fff;font-weight:600}
-  .m{color:#5d6b66;font-size:15px;line-height:1.4}
-  .h{display:none}
+  #ldr{position:fixed;inset:0;margin:0;font-family:system-ui,-apple-system,sans-serif;background:#f4f6f5;color:#1d2a25;display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;z-index:99999}
+  #ldr .c{max-width:340px;width:100%;text-align:center}
+  #ldr .i{font-size:46px}
+  #ldr input,#ldr button{width:100%;box-sizing:border-box;font-size:17px;border-radius:12px;padding:13px;margin-top:12px}
+  #ldr input{border:1px solid #c9d3cf}
+  #ldr button{border:0;background:#1f6f54;color:#fff;font-weight:600}
+  #ldr .m{color:#5d6b66;font-size:15px;line-height:1.4}
+  #ldr .h{display:none}
 </style>
 </head>
-<body>
-<div class="c">
+<body style="margin:0">
+<div id="ldr"><div class="c">
   <div class="i" id="ic">⏳</div>
   <h2 style="margin:8px 0 6px">Gloob</h2>
   <div class="m" id="msg">Carregando…</div>
@@ -30,7 +31,7 @@
     <button type="button" id="pedir">Pedir acesso</button>
   </div>
   <button type="button" class="h" id="tentar">Já aprovei, tentar de novo</button>
-</div>
+</div></div>
 <script>
 (function () {
 const API = "https://script.google.com/macros/s/AKfycbzVlnZD1v1QPDk8ox7TsO1okgK_9zkPbE8eFyLVgMViqVJelqd_PpHy6J17VWYWanUs/exec";
@@ -49,7 +50,7 @@ function tela(ic, msg, nome, tentar) {
   $("nm").className = nome ? "" : "h"; $("tentar").className = tentar ? "" : "h";
 }
 function mostra(html) {
-  const vai = () => { document.open(); document.write(html); document.close(); };
+  const vai = () => { const l = document.getElementById("ldr"); if (l) l.remove(); document.open(); document.write(html); document.close(); };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", () => setTimeout(vai, 0)); else setTimeout(vai, 0);
 }
 async function abrir() {
